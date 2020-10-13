@@ -1,7 +1,8 @@
 package com.technetwork.macroshop.service.impl;
 
-import com.technetwork.macroshop.dao.CredentialsDao;
+import com.technetwork.macroshop.dao.UserDao;
 import com.technetwork.macroshop.model.User;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,21 +16,18 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final CredentialsDao credentialsDao;
-
-    public UserDetailsServiceImpl(CredentialsDao credentialsDao) {
-        this.credentialsDao = credentialsDao;
-    }
+    private final UserDao userDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
         //todo replace optional with proper repository
-        Optional<User> optionalCredentials = Optional.ofNullable(credentialsDao.findByLogin(username.toLowerCase()));
-        if (optionalCredentials.isPresent()) {
-            final User user = optionalCredentials.get();
+        Optional<User> optionalUser = Optional.ofNullable(userDao.findByLogin(username.toLowerCase()));
+        if (optionalUser.isPresent()) {
+            final User user = optionalUser.get();
             return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), getGrantedAuthorities(user));
         } else {
             log.warn("No user found with username=" + username);
