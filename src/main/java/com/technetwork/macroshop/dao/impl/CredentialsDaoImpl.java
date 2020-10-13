@@ -1,8 +1,8 @@
 package com.technetwork.macroshop.dao.impl;
 
 import com.technetwork.macroshop.dao.CredentialsDao;
-import com.technetwork.macroshop.model.Credentials;
-import com.technetwork.macroshop.repository.CredentialsRepository;
+import com.technetwork.macroshop.model.User;
+import com.technetwork.macroshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class CredentialsDaoImpl implements CredentialsDao {
 
-    private final CredentialsRepository credentialsRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public Credentials findByUsername(String username) {
-        return credentialsRepository.findByUsername(username.toLowerCase());
+    public User findByLogin(String login) {
+        return userRepository.findByLogin(login.toLowerCase());
     }
 }

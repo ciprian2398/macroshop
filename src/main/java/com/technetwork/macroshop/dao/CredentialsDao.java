@@ -1,7 +1,7 @@
 package com.technetwork.macroshop.dao;
 
-import com.technetwork.macroshop.model.Credentials;
+import com.technetwork.macroshop.model.User;
 
 public interface CredentialsDao {
-    Credentials findByUsername(String username);
+    User findByLogin(String username);
 }

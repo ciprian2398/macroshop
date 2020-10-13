@@ -1,11 +1,10 @@
-package com.technetwork.macroshop.service;
+package com.technetwork.macroshop.service.impl;
 
 import com.technetwork.macroshop.dao.CredentialsDao;
-import com.technetwork.macroshop.model.Credentials;
+import com.technetwork.macroshop.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,19 +27,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         //todo replace optional with proper repository
-        Optional<Credentials> optionalCredentials = Optional.ofNullable(credentialsDao.findByUsername(username.toLowerCase()));
+        Optional<User> optionalCredentials = Optional.ofNullable(credentialsDao.findByLogin(username.toLowerCase()));
         if (optionalCredentials.isPresent()) {
-            final Credentials credentials = optionalCredentials.get();
-            return new User(credentials.getUsername(), credentials.getPassword(), getGrantedAuthorities(credentials));
+            final User user = optionalCredentials.get();
+            return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), getGrantedAuthorities(user));
         } else {
             log.warn("No user found with username=" + username);
             throw new UsernameNotFoundException("No user found");
         }
     }
 
-    private Set<GrantedAuthority> getGrantedAuthorities(Credentials credentials) {
+    private Set<GrantedAuthority> getGrantedAuthorities(User user) {
         final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(credentials.getCredentialsRole().toString()));
+        grantedAuthorities.add(new SimpleGrantedAuthority(user.getCredentialsRole().toString()));
         return grantedAuthorities;
     }
 }
