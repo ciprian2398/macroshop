@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -24,11 +23,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        //todo replace optional with proper repository
-        Optional<User> optionalUser = Optional.ofNullable(userDao.findByLogin(username.toLowerCase()));
-        if (optionalUser.isPresent()) {
-            final User user = optionalUser.get();
-            return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), getGrantedAuthorities(user));
+        final User user = userDao.findByLogin(username.toLowerCase());
+        if (user != null) {
+            return new org.springframework.security.core.userdetails.User(
+                    user.getLogin(), user.getPassword(), getGrantedAuthorities(user));
         } else {
             log.warn("No user found with username=" + username);
             throw new UsernameNotFoundException("No user found");

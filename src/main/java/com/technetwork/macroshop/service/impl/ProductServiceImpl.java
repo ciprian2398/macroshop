@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
     public void buy(String username, List<Long> productIds) {
         final User buyingUser = userDao.findByLogin(username);
         final List<Product> productList = productDao.findAllById(productIds);
-        if (isValidTransaction(buyingUser.getWallet(), productList)) {// todo don't buy from yourself
+        if (isValidTransaction(buyingUser, productList)) {
             updateAndPersist(buyingUser, productList);
         } else {
             throw new NotAllowedToBuyException();

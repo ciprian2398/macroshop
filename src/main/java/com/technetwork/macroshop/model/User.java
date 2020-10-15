@@ -21,7 +21,7 @@ public class User {
 
     @ToString.Exclude
     @Column(name = "password", nullable = false)
-    private String password; //todo ignore id db?
+    private String password;
 
     @Column(name = "wallet", nullable = false)
     private Double wallet;
