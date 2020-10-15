@@ -2,18 +2,23 @@ package com.technetwork.macroshop.controller;
 
 import com.technetwork.macroshop.model.Product;
 import com.technetwork.macroshop.service.ProductService;
+import com.technetwork.macroshop.util.NotAllowedToBuyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static com.technetwork.macroshop.util.Utils.csvNumbersToLongList;
+import static com.technetwork.macroshop.util.Utils.generateRange;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,12 +38,22 @@ public class ProductController {
 
         int totalPages = productPage.getTotalPages();
         if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute("pageNumbers", generateRange(totalPages));
         }
 
         return "userCabinet";
+    }
+
+    @PostMapping(value = "/userCabinet")
+    public String buy(Authentication authentication, @RequestParam("selected") String selected) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            try {
+                productService.buy(principal.getUsername(), csvNumbersToLongList(selected));
+            } catch (NotAllowedToBuyException e) {
+                return "redirect:/userCabinet?failed";
+            }
+        }
+        return "redirect:/userCabinet?success";
     }
 }

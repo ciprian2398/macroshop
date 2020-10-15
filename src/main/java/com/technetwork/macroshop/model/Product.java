@@ -28,6 +28,7 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private Long stock;
 
-    @Column(name = "owner", nullable = false)
-    private String owner;
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
@@ -10,28 +10,36 @@
     <button>Logout</button>
 </a>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th th:text="id"></th>
-        <th th:text="name"></th>
-        <th th:text="price"></th>
-        <th th:text="stock"></th>
-        <th th:text="owner"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product, iStat : ${productPage}"
-        th:style="${iStat.odd}? 'font-weight: bold;'"
-        th:alt-title="${iStat.even}? 'even' : 'odd'">
-        <td th:text="${product.id}"></td>
-        <td th:text="${product.name}"></td>
-        <td th:text="${product.price}"></td>
-        <td th:text="${product.stock}"></td>
-        <td th:text="${product.owner}"></td>
-    </tr>
-    </tbody>
-</table>
+<form action="/userCabinet" method="post">
+    <table border="1">
+        <thead>
+        <tr>
+            <th th:text="id"></th>
+            <th th:text="name"></th>
+            <th th:text="price"></th>
+            <th th:text="stock"></th>
+            <th th:text="owner"></th>
+            <th>
+                <input type="submit" value="Buy">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product, iStat : ${productPage}"
+            th:style="${iStat.odd}? 'font-weight: bold;'"
+            th:alt-title="${iStat.even}? 'even' : 'odd'">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.stock}"></td>
+            <td th:text="${product.owner.login}"></td>
+            <td>
+                <input type="checkbox" id="id" name="selected" th:value="${product.id}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
 <div th:if="${productPage.totalPages > 0}" class="pagination"
      th:each="pageNumber : ${pageNumbers}">
     <a th:href="@{/userCabinet(size=${productPage.size}, page=${pageNumber})}"
