@@ -19,13 +19,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfiguration(@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
+    public SecurityConfiguration(
+            @Qualifier("userDetailsService") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService);//NOSONAR irrelevant as we use BCryptPasswordEncoder
         auth.authenticationProvider(authenticationProvider());
     }
 
